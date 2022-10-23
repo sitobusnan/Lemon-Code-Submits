@@ -1,0 +1,74 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build: debug",
+			"dependsOn": [
+				"build"
+			],
+			"dockerBuild": {
+				"tag": "lemoncodechallenge:dev",
+				"target": "base",
+				"dockerfile": "${workspaceFolder}/backend/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/backend/backend.csproj"
+			}
+		},
+		{
+			"type": "docker-build",
+			"label": "docker-build: release",
+			"dependsOn": [
+				"build"
+			],
+			"dockerBuild": {
+				"tag": "lemoncodechallenge:latest",
+				"dockerfile": "${workspaceFolder}/backend/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/backend/backend.csproj"
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dependsOn": [
+				"docker-build: debug"
+			],
+			"dockerRun": {},
+			"netCore": {
+				"appProject": "${workspaceFolder}/backend/backend.csproj",
+				"enableDebugging": true
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: release",
+			"dependsOn": [
+				"docker-build: release"
+			],
+			"dockerRun": {},
+			"netCore": {
+				"appProject": "${workspaceFolder}/backend/backend.csproj"
+			}
+		},
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "node",
+			"dockerBuild": {
+				"dockerfile": "${workspaceFolder}/frontend/Dockerfile",
+				"context": "${workspaceFolder}/frontend",
+				"pull": true
+			},
+			"node": {
+				"package": "${workspaceFolder}/frontend/package.json"
+			}
+		}
+	]
+}
