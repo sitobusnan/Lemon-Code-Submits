@@ -4,7 +4,7 @@
 
 Creación de la red '**lemoncode-challenge**'
 
-```
+```bash
 docker network create lemoncode-challenge    
 ````
 ### Mongo DB
@@ -16,18 +16,11 @@ Creación y despliegue de un contenedor con Mongo DB:
 - se añade a la red '**lemoncode-challenge**'
 - expone el puerto 27017 para pruebas
 
-```
-docker run 
--d --name lemon-mongo 
--v lemonmongovol:/data/db 
--e MONGO_INITDB_ROOT_USERNAME=lemon 
--e MONGO_INITDB_ROOT_PASSWORD=lemon 
---network lemoncode-challenge 
--p 27017:27017 
-mongo 
+```bash
+docker run -d --name lemon-mongo -v lemonmongovol:/data/db -e MONGO_INITDB_ROOT_USERNAME=lemon -e MONGO_INITDB_ROOT_PASSWORD=lemon --network lemoncode-challenge -p 27017:27017 mongo 
 ````
 
-Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos desde el archivo '_*backend/seeds.json*_':
+Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos desde el archivo `backend/seeds.json`:
 
 ![](./images/mongo.png)
 
@@ -41,8 +34,8 @@ Modificaciones respecto al repositorio original del Challenge:
 - en el archivo '_appsettings.json_' se modifica la cadena de conexión a mongo para añadir la autentición (no lo parametrizo por cuestión de tiempo, nunca lo he hecho en .NET )
 >     "ConnectionString": "mongodb://lemon:lemon@lemon-mongo:27017/?authMechanism=SCRAM-SHA-1",
 
-Se crea el Dockerfile en '_*backend/Dockerfile*_'
-````
+Se crea el Dockerfile en `backend/Dockerfile`
+```Dockerfile
 FROM mcr.microsoft.com/dotnet/aspnet:3.1-focal AS base
 WORKDIR /app
 EXPOSE 5000
@@ -69,8 +62,8 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "backend.dll"]
 ````
 
-Desde la ruta '/backend' podemos construir su imagen y la nombramos '**backendlemon**':
-````
+Desde la ruta `/backend` podemos construir su imagen y la nombramos '**backendlemon**':
+```bash
 docker build -t backendlemon:latest . 
 ````
 Creación y despliegue de un contenedor con el proyecto Backend:
@@ -78,12 +71,8 @@ Creación y despliegue de un contenedor con el proyecto Backend:
 - se añade a la red '**lemoncode-challenge**'
 - mapea el puerto 5001 al 5000 del contenedor para pruebas ( algunos servicios de macOS usan el puerto 5000 )
 
-````
-docker run -d 
---name netbackend 
---network lemoncode-challenge 
--p 5001:5000 
-backendlemon   
+```bash
+docker run -d --name netbackend --network lemoncode-challenge -p 5001:5000 backendlemon   
 ````
 
 ### FrontEnd 
@@ -91,9 +80,9 @@ backendlemon
 Modificaciones respecto al repositorio original del Challenge:
 - sin modificaciones.
 
-Se crea el Dockerfile en '_*frontend/Dockerfile*_'
+Se crea el Dockerfile en `frontend/Dockerfile`
 - Como parametro se pasa la url del backend expuesto en el puerto 5000
-````
+```Dockerfile
 FROM node:lts-alpine
 ENV NODE_ENV=production
 ENV API_URI='http://netbackend:5000/api/topics'
@@ -107,7 +96,7 @@ USER node
 CMD ["node", "server.js"]
 ````
 
-Desde la ruta '/frontend' podemos construir su imagen y la nombramos '**frontendlemon**':
+Desde la ruta `/frontend` podemos construir su imagen y la nombramos '**frontendlemon**':
 ````
 docker build -t frontendlemon:latest . 
 ````
@@ -144,7 +133,7 @@ Se crea el docker-compose.yml en la raiz del proyecto con la estructura:
 - Redes:
     - lemoncode-challenge
 
-````
+```yaml
 version: '3.4'
 services:
   lemon-mongo:
@@ -196,7 +185,7 @@ networks:
 
 Para ejecutarlo habrá que indicar que además construya las imagenes que necesite desde los Dockerfile de cada proyecto:
 
-````
+```bash
 docker-compose up -d --build
 ````
 
