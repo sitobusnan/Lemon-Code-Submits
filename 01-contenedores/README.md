@@ -27,6 +27,10 @@ docker run
 mongo 
 ````
 
+Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos:
+
+![](./images/mongo.png)
+
 ### Backend ( Versión .NET )
 
 Modificaciones respecto al repositorio original del Challenge:
@@ -121,9 +125,12 @@ docker run -d
 frontendlemon
 ````
 
+### Resultado 
+
 Desde la URL [http://localhost:3000](http://localhost:3000) ya será accesible y visible la lista de elementos.
 
+![](./images/front.png)
 
 
-
+## Ejercicio 2 - Docker Compose
 

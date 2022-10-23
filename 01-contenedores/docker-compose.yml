@@ -1,5 +1,26 @@
-docker network create lemoncode-challenge    
-docker run -d --name lemon-mongo -v lemonmongovol:/data/db -e MONGO_INITDB_ROOT_USERNAME=lemon -e MONGO_INITDB_ROOT_PASSWORD=lemon --network lemoncode-challenge -p 27017:27017 mongo 
-docker build -t backendlemon:latest . 
-docker run -d --name netbackend -p 5001:5000 --network lemoncode-challenge backendlemon   
-docker run -d --name nodefrontend -p 3000:3000 --network lemoncode-challenge frontendlemon
+#docker-compose.yml (Base)
+version: '3.4'
+services:
+  lemonmongo:
+    image: mongo
+    volumes:
+      - lemonmongovol:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME:
+        value: lemon 
+      - MONGO_INITDB_ROOT_PASSWORD:
+        value: lemon
+    networks:
+      - lemoncode-challenge
+    ports:
+      - 27017:27017
+
+volumes:
+  - lemonmongovol    
+
+networks:
+  - lemoncode-challenge
+    
+
+
+
