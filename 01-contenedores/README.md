@@ -27,7 +27,7 @@ docker run
 mongo 
 ````
 
-Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos:
+Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos desde el archivo '_*backend/seeds.json*_':
 
 ![](./images/mongo.png)
 
@@ -41,7 +41,7 @@ Modificaciones respecto al repositorio original del Challenge:
 - en el archivo '_appsettings.json_' se modifica la cadena de conexión a mongo para añadir la autentición (no lo parametrizo por cuestión de tiempo, nunca lo he hecho en .NET )
 >     "ConnectionString": "mongodb://lemon:lemon@lemon-mongo:27017/?authMechanism=SCRAM-SHA-1",
 
-Se crea el Dockerfile
+Se crea el Dockerfile en '_*backend/Dockerfile*_'
 ````
 FROM mcr.microsoft.com/dotnet/aspnet:3.1-focal AS base
 WORKDIR /app
@@ -91,7 +91,7 @@ backendlemon
 Modificaciones respecto al repositorio original del Challenge:
 - sin modificaciones.
 
-Se crea el Dockerfile:
+Se crea el Dockerfile en '_*frontend/Dockerfile*_'
 - Como parametro se pasa la url del backend expuesto en el puerto 5000
 ````
 FROM node:lts-alpine
@@ -133,4 +133,79 @@ Desde la URL [http://localhost:3000](http://localhost:3000) ya será accesible y
 
 
 ## Ejercicio 2 - Docker Compose
+
+Se crea el docker-compose.yml en la raiz del proyecto con la estructura:
+- Servicios:
+    - MongoDB
+    - Backend
+    - Frontend
+- Volumenes:
+    - lemonmongovol
+- Redes:
+    - lemoncode-challenge
+
+````
+version: '3.4'
+services:
+  lemon-mongo:
+    image: mongo
+    volumes:
+      - lemonmongovol:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=lemon 
+      - MONGO_INITDB_ROOT_PASSWORD=lemon
+    networks:
+      - lemoncode-challenge
+    ports:
+      - 27017:27017
+
+  netbackend:
+    image: backendlemon
+    build: ./backend
+    depends_on:
+      - lemon-mongo
+    networks:
+      - lemoncode-challenge
+    ports:
+      - 5001:5000
+
+
+  nodefrontend:
+    image: frontendlemon
+    build: ./frontend
+    depends_on:
+      - netbackend
+    environment:
+      - API_URI=http://netbackend:5000/api/topics
+    networks:
+      - lemoncode-challenge
+    ports:
+      - 3000:3000
+
+
+volumes:
+  lemonmongovol:
+    name: lemonmongovol
+
+networks:
+  lemoncode-challenge:
+    driver: bridge
+    name: lemoncode-challenge
+    
+````
+
+Para ejecutarlo habrá que indicar que además construya las imagenes que necesite desde los Dockerfile de cada proyecto:
+
+````
+docker-compose up -d --build
+````
+
+Hecho con ❤️ y ☕️ por @sitobusnan
+
+
+
+
+
+
+
 

@@ -1,25 +1,49 @@
-#docker-compose.yml (Base)
 version: '3.4'
 services:
-  lemonmongo:
+  lemon-mongo:
     image: mongo
     volumes:
       - lemonmongovol:/data/db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME:
-        value: lemon 
-      - MONGO_INITDB_ROOT_PASSWORD:
-        value: lemon
+      - MONGO_INITDB_ROOT_USERNAME=lemon 
+      - MONGO_INITDB_ROOT_PASSWORD=lemon
     networks:
       - lemoncode-challenge
     ports:
       - 27017:27017
 
+  netbackend:
+    image: backendlemon
+    build: ./backend
+    depends_on:
+      - lemon-mongo
+    networks:
+      - lemoncode-challenge
+    ports:
+      - 5001:5000
+
+
+  nodefrontend:
+    image: frontendlemon
+    build: ./frontend
+    depends_on:
+      - netbackend
+    environment:
+      - API_URI=http://netbackend:5000/api/topics
+    networks:
+      - lemoncode-challenge
+    ports:
+      - 3000:3000
+
+
 volumes:
-  - lemonmongovol    
+  lemonmongovol:
+    name: lemonmongovol
 
 networks:
-  - lemoncode-challenge
+  lemoncode-challenge:
+    driver: bridge
+    name: lemoncode-challenge
     
 
 
