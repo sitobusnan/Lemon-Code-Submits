@@ -19,9 +19,6 @@ services:
       - lemon-mongo
     networks:
       - lemoncode-challenge
-    ports:
-      - 5001:5000
-
 
   nodefrontend:
     image: frontendlemon
