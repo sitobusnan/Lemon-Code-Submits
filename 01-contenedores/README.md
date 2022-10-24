@@ -6,7 +6,7 @@ Creación de la red '**lemoncode-challenge**'
 
 ```bash
 docker network create lemoncode-challenge    
-````
+```
 ### Mongo DB
 
 Creación y despliegue de un contenedor con Mongo DB:
@@ -16,9 +16,9 @@ Creación y despliegue de un contenedor con Mongo DB:
 - se añade a la red '**lemoncode-challenge**'
 - expone el puerto 27017 para pruebas
 
-```bash
+```
 docker run -d --name lemon-mongo -v lemonmongovol:/data/db -e MONGO_INITDB_ROOT_USERNAME=lemon -e MONGO_INITDB_ROOT_PASSWORD=lemon --network lemoncode-challenge -p 27017:27017 mongo 
-````
+```
 
 Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos desde el archivo `backend/seeds.json`:
 
@@ -27,12 +27,16 @@ Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Top
 ### Backend ( Versión .NET )
 
 Modificaciones respecto al repositorio original del Challenge:
-- en el archivo '_backend.csproj_' se modifica el driver de Mongo debido a problemas de compilación.
+- en el archivo `backend/backend.csproj` se modifica el driver de Mongo debido a problemas propios del entorno de compilación.
 
->     <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
+```xml
+ <PackageReference Include="MongoDB.Driver" Version="2.10.1" />
+```
 
-- en el archivo '_appsettings.json_' se modifica la cadena de conexión a mongo para añadir la autentición (no lo parametrizo por cuestión de tiempo, nunca lo he hecho en .NET )
->     "ConnectionString": "mongodb://lemon:lemon@lemon-mongo:27017/?authMechanism=SCRAM-SHA-1",
+- en el archivo `backend/appsettings.json` se modifica la cadena de conexión a mongo para añadir la autentición (no lo parametrizo por cuestión de tiempo, nunca lo he hecho en .NET )
+```json
+"ConnectionString": "mongodb://lemon:lemon@lemon-mongo:27017/?authMechanism=SCRAM-SHA-1"
+```
 
 Se crea el Dockerfile en `backend/Dockerfile`
 ```Dockerfile
@@ -60,12 +64,12 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "backend.dll"]
-````
+```
 
 Desde la ruta `/backend` podemos construir su imagen y la nombramos '**backendlemon**':
 ```bash
 docker build -t backendlemon:latest . 
-````
+```
 Creación y despliegue de un contenedor con el proyecto Backend:
 - se nombra como '**netbackend**'
 - se añade a la red '**lemoncode-challenge**'
@@ -73,7 +77,7 @@ Creación y despliegue de un contenedor con el proyecto Backend:
 
 ```bash
 docker run -d --name netbackend --network lemoncode-challenge -p 5001:5000 backendlemon   
-````
+```
 
 ### FrontEnd 
 
@@ -94,25 +98,25 @@ EXPOSE 3000
 RUN chown -R node /usr/src/app
 USER node
 CMD ["node", "server.js"]
-````
+```
 
 Desde la ruta `/frontend` podemos construir su imagen y la nombramos '**frontendlemon**':
-````
+```bash
 docker build -t frontendlemon:latest . 
-````
+```
 
 Creación y despliegue de un contenedor con el proyecto Frontend:
 - se nombra como '**nodefrontend**'
 - se añade a la red '**lemoncode-challenge**'
 - mapea el puerto 3000 al 3000 del contenedor para que sea accesible 
 
-````
+```bash
 docker run -d 
 --name nodefrontend 
 --network lemoncode-challenge 
 -p 3000:3000 
 frontendlemon
-````
+```
 
 ### Resultado 
 
@@ -181,13 +185,13 @@ networks:
     driver: bridge
     name: lemoncode-challenge
     
-````
+```
 
 Para ejecutarlo habrá que indicar que además construya las imagenes que necesite desde los Dockerfile de cada proyecto:
 
 ```bash
 docker-compose up -d --build
-````
+```
 
 Hecho con ❤️ y ☕️ por @sitobusnan
 
