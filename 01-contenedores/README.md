@@ -16,11 +16,28 @@ Creación y despliegue de un contenedor con Mongo DB:
 - se añade a la red '**lemoncode-challenge**'
 - expone el puerto 27017 para pruebas
 
-```
+```bash
 docker run -d --name lemon-mongo -v lemonmongovol:/data/db -e MONGO_INITDB_ROOT_USERNAME=lemon -e MONGO_INITDB_ROOT_PASSWORD=lemon --network lemoncode-challenge -p 27017:27017 mongo 
 ```
 
 Iniciliza una BBDD llamada '**TopicstoreDb**' y una colección denominada '**Topics**' con un par de documentos desde el archivo `backend/seeds.json`:
+
+```json
+[
+    {
+        "_id": {
+          "$oid": "6355b0f27e005beba60453df"
+        },
+        "Name": "Docker"
+    },{
+        "_id": {
+          "$oid": "6355b1207e005beba60453e0"
+        },
+        "Name": "Test"
+    }
+]
+```
+
 
 ![](./images/mongo.png)
 
