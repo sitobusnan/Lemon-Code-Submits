@@ -24,9 +24,9 @@ if grep -q -i "$palabra_a_buscar" temp.html; then
     if [ "$appearCount" -eq 1 ]; then
         echo "Aparece únicamente en la línea $firstLine."
     else
-        echo "La palabra \"$searchWord\" aparece $appearCount veces."
+        echo "Aparece por primera vez en la línea $firstLine."
     fi
-    echo "Aparece por primera vez en la línea $firstLine."
+    echo "La palabra \"$searchWord\" aparece $appearCount veces."
 else
     echo "No se ha encontrado la palabra \"$searchWord\"."
 fi
