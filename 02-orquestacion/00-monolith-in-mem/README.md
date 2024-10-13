@@ -49,3 +49,6 @@ y lo aplicamos al cluster:
 ```
 
 
+## PASO 3
+Crear un LoadBalancer service para acceder al Deployment anteriormente creado desde fuera del clúster. Para poder utilizar un LoadBalancer con minikube seguir las instrucciones de este artículo
+

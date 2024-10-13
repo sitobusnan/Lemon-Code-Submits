@@ -6,14 +6,20 @@ spec:
   selector:
     matchLabels:
       app: todoapp00
+      exercise: '00'
   template:
     metadata:
       labels:
         app: todoapp00
+        exercise: '00'
     spec:
       containers:
         - name: todoapp00
           image: sitobusnan/todoapp
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
           env:
           - name: PORT
             value: '3000'
