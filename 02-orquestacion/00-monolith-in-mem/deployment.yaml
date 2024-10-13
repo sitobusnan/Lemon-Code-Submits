@@ -16,13 +16,10 @@ spec:
       containers:
         - name: todoapp00
           image: sitobusnan/todoapp
-          resources:
-            limits:
-              cpu: 500m
-              memory: 128Mi
+          ports:
+            - containerPort: 3000          
           env:
           - name: PORT
             value: '3000'
           - name: NODE_ENV
             value: 'development'
-          containerPort: '3000'
